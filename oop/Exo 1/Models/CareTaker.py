@@ -1,7 +1,7 @@
 import datetime as dt
 
 class CareTaker:
-  __name = None
+  _name = None
   _birthdate = None
   _experience = 0
   _number_of_animals_in_care = 0
@@ -9,13 +9,11 @@ class CareTaker:
 
   @property
   def name(self):
-    return self.__name
+    return self._name
 
   @name.setter
-  def name(self, value):
-    if not isinstance(value, str):
-      raise TypeError("Name must be a string")
-    self.__name = value
+  def name(self, new_name):
+    self._name = new_name
 
   @property
   def birthdate(self):
