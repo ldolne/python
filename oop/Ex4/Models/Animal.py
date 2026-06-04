@@ -1,6 +1,7 @@
 import random as rd
+from abc import ABC, abstractmethod
 
-class Animal:
+class Animal(ABC):
   @property
   def name(self):
     return self.__name
@@ -24,6 +25,10 @@ class Animal:
   @property
   def alive(self):
     return self.__alive
+  
+  @alive.setter
+  def alive(self, value):
+    self.__alive = value
 
   @property
   def care_taker(self):
@@ -42,7 +47,7 @@ class Animal:
 
   def __str__(self):
     return "Animal: name is %s, appetite is %s, satisfaction is %s, alive is %s, caretaker is %s" % (self.__name, self.__appetite, self.__satisfaction, self.__alive, self.__care_taker)
-
+  
   def eat(self):
     if not(self.__alive):
       raise Exception("The elephant has died of hunger!")
@@ -65,6 +70,7 @@ class Animal:
     if not(self.__alive):
       raise Exception("The elephant is dead and can't go hungry anymore!")
     self.__appetite -= 10
+    print("The animal grows hungry.")
     if(self.__appetite <= 0):
       self.__alive = False
 
@@ -72,5 +78,15 @@ class Animal:
     if not(self.__alive):
       raise Exception("The elephant is dead and can't receive love!")
     self.__satisfaction -= 10
+  
+  @abstractmethod
   def observe_environment(self):
-    print("Animal observe its environment.")
+    pass
+
+  @abstractmethod
+  def pick_up_object(self):
+    pass
+
+  @abstractmethod
+  def death_probability(self):
+    pass

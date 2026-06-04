@@ -1,4 +1,5 @@
 from .Animal import Animal 
+from random import choice, random
 
 class Giraffe(Animal):
   @property
@@ -30,5 +31,15 @@ class Giraffe(Animal):
       print("Giraffe drinks water.")
 
   def observe_environment(self):
-    super().observe_environment()
     print("Giraffe observes its environment.")
+
+  def pick_up_object(self):
+    objects = ["feuille", "pomme de pin", "brindille", "banane"]
+    picked_up_object = choice(objects)
+    print(f"{self.name} the giraffe picks up an object: {picked_up_object}")
+
+  def death_probability(self):
+    death_probability = random() # valeur aléatoire entre 0 et 1 (nombre à virgule)
+    if death_probability < 0.9: # 10%
+      self.alive = False
+      print(f"{self.name} the giraffe is dead.")
