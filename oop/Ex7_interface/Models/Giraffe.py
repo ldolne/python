@@ -1,7 +1,7 @@
 from .Animal import Animal 
 from random import choice, random
 
-class Giraffe(Animal):
+class Giraffe(Animal): # ou double héritage avec classe abstraite, interface (Animal, IAnimal)
   @property
   def neck_size(self):
     return self.__neck_size
