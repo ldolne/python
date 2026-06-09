@@ -2,7 +2,8 @@ from decimal import Decimal
 
 from sqlalchemy import String, DECIMAL
 
-from .base import Base, category_plant
+from .base import Base
+from .relations import category_plant
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -19,4 +20,4 @@ class Plant(Base):
 
     stocks: Mapped[list["Stock"]] = relationship(back_populates='plant')
     order_lines: Mapped[list["OrderLine"]] = relationship(back_populates='plant')
-    categories: Mapped[list["Category"]] = relationship(secondary=category_plant, back_populates="plants")
+    categories: Mapped[list["Category"]] = relationship(secondary=category_plant, back_populates="plants") # "category_plant", le nom de la table, est suffisant, car la table sera créée

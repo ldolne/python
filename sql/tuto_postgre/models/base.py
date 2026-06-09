@@ -1,13 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import MappedAsDataclass, DeclarativeBase
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
 
 class Base(MappedAsDataclass, DeclarativeBase):
     pass
 
-# Associative tables
-category_plant = Table(
-    "category_plant",
-    Base.metadata,
-    Column("category_id", ForeignKey("category.id")),
-    Column("plant_id", ForeignKey("plant.id")),
-)
+load_dotenv()
+
+url = os.getenv('DB_URL')
+engine = create_engine(url=url)
+Base.metadata.create_all(bind=engine) # permet de récupérer toutes les classes qui héritent de Base et de les créer en DB via l'engine (ne les crée qu'une fois, donc peut être relancé)

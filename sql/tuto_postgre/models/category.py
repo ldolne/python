@@ -1,4 +1,5 @@
-from .base import Base, category_plant
+from .base import Base
+from .relations import category_plant
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
