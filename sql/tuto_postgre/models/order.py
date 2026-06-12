@@ -7,8 +7,8 @@ from datetime import date
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from tuto_postgre.models import OrderLine
-    from tuto_postgre.models import Customer # pour éviter référence circulaire, ajouter un import comme type uniquement ; sert à l'autocomplétion et le typage, MAIS n'importe plus la classe
+    from models import OrderLine
+    from models import Customer # pour éviter référence circulaire, ajouter un import comme type uniquement ; sert à l'autocomplétion et le typage, MAIS n'importe plus la classe
 
 class Order(Base):
     class Status(Enum): # classe imbriquée

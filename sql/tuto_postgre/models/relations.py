@@ -1,7 +1,7 @@
 # Associative tables
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, Table
 
-from tuto_postgre.models.base import Base
+from models.base import Base
 
 
 category_plant = Table(
