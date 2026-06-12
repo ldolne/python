@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class Plant(Base):
     __tablename__ = "plant"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True) # définit la longueur de la str en db
     description: Mapped[str] = mapped_column(nullable=True)
     base_price: Mapped[Decimal] = mapped_column(DECIMAL(6,2)) # decimal a virgule fixe

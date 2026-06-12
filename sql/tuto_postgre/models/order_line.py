@@ -20,3 +20,6 @@ class OrderLine(Base):
 
     order: Mapped["Order"] = relationship(back_populates='order_lines')
     plant: Mapped["Plant"] = relationship(back_populates='order_lines')
+
+    def line_total(self) :
+        return self.quantity * self.unit_price

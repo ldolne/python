@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
 
-class Base(MappedAsDataclass, DeclarativeBase):
+class Base(DeclarativeBase): # MappedAsDataclass commenté pour l'instant
     pass
 
 load_dotenv()

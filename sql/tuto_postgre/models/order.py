@@ -18,7 +18,7 @@ class Order(Base):
         CANCELED = "CANCELED"
 
     __tablename__ = "order"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     order_date: Mapped[date] = mapped_column()
     status: Mapped[Status] = mapped_column(SQLEnum(Status))
     # customer_id: Mapped[int] = mapped_column()
@@ -26,3 +26,5 @@ class Order(Base):
     customer: Mapped["Customer"] = relationship(back_populates='orders') # nom de la propriété inverse ; relation bidirectionnelle (pas obligatoire)
     order_lines: Mapped[list["OrderLine"]] = relationship(back_populates='order')
 
+    def total(self):
+        return sum([ ol.quantity * ol.unit_price for ol in self.order_lines])
