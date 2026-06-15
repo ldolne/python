@@ -1,8 +1,8 @@
 import random as rd
 from abc import abstractmethod
-from .IAnimal import IAnimal 
+from ..Interfaces.IAnimal import IAnimal 
 
-class Animal(IAnimal):
+class Animal(IAnimal): # faire hériter classe abstraite de interface
   @property
   def name(self):
     return self.__name

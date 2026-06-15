@@ -1,5 +1,5 @@
 # Permet de centraliser les imports des classes du dossier Models
-from .IAnimal import IAnimal
+from ..Interfaces.IAnimal import IAnimal
 from .Animal import Animal
 from .Elephant import Elephant
 from .Giraffe import Giraffe

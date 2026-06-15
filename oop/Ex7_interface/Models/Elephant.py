@@ -1,7 +1,7 @@
 from .Animal import Animal 
 from random import choice, random
 
-class Elephant(Animal):
+class Elephant(Animal): # ou double héritage avec classe abstraite, interface (Animal, IAnimal)
   @property
   def tusk_size(self):
     return self.__tusk_size

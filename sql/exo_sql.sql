@@ -16,17 +16,17 @@ CREATE TABLE T_course
 
 CREATE TABLE T_professor -- incorrect : NOT NULL PAS NECESS SUR PK, FK et UNIQUE
 (
-  prf_id INTEGER NOT NULL PRIMARY KEY,
-  prf_name VARCHAR(30),
-  prf_course CHAR(8),
-  crs_code CHAR,
-  office_id INTEGER,
-  CONSTRAINT FK_course FOREIGN KEY(crs_code)
-  REFERENCES T_course(crs_code)
-  ON DELETE SET NULL,
-  CONSTRAINT FK_office FOREIGN KEY(office_id)
-  REFERENCES T_office(office_id),
-  CONSTRAINT UK_prf_name UNIQUE(prf_name)
+    prf_id INTEGER NOT NULL PRIMARY KEY,
+    prf_name VARCHAR(30),
+    prf_course CHAR(8),
+    crs_code CHAR,
+    office_id INTEGER,
+    CONSTRAINT FK_course FOREIGN KEY(crs_code)
+    REFERENCES T_course(crs_code)
+    ON DELETE SET NULL,
+    CONSTRAINT FK_office FOREIGN KEY(office_id)
+    REFERENCES T_office(office_id),
+    CONSTRAINT UK_prf_name UNIQUE(prf_name)
 )
 
 -- Exo 1.2
@@ -87,5 +87,5 @@ INSERT INTO T_VOITURE_VTR VALUES (15, '4412 LR 75', 'GO', 7, 4, '305', 'PEUGEOT'
 INSERT INTO T_VOITURE_VTR VALUES (17, '971 VTR 96', NULL, 7, 5, '306', 'PEUGEOT', '00017548'); -- Erreur car CARB vide et 96
 INSERT INTO T_VOITURE_VTR VALUES (19, '991 SDT 75', 'ES', 8, 5, 'MEGANE', 'RENAULT', '00014578');
 INSERT INTO T_VOITURE_VTR VALUES (20, '991 SDT 75', 'ES', 5, 4, 'MEGANE', 'RENAULT', '00014578'); -- Erreur car déjà présent
-INSERT INTO T_VOITURE_VTR VALUES (14, '4875 ZT 94', NULL, 7, 5, NULL, 'RENAULT', '005784'); -- Erreur car CARB vide
+INSERT INTO T_VOITURE_VTR VALUES (14, '4875 ZT 94', NULL, 7, 5, NULL, 'RENAULT', '005784'); -- Erreur car CARB vide et 14 PK déjà présente
 INSERT INTO T_VOITURE_VTR VALUES (7, '5474 MRT 91', 'GPL', 5, 4, 'PT CRUISER', 'CHRYSLER', '0000050214'); -- Erreur car immatriculation trop longue
