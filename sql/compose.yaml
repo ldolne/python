@@ -1,0 +1,26 @@
+# Use postgres/example user/password credentials
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    # set shared memory limit when using docker compose
+    # Allocates 128 MB for /dev/shm (shared memory).
+    # PostgreSQL uses shared memory for:
+    # - caching
+    # - query execution
+    # - internal communication
+    # The default Docker shared memory is only 64 MB, which can be too small for some workloads.
+    shm_size: 128mb
+    ports:
+        - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+        POSTGRES_DB: '${POSTGRES_DB}'
+        POSTGRES_USER: '${POSTGRES_USER}'
+        POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+    volumes:
+        - 'postgres_data:/var/lib/postgresql'
+volumes:
+  postgres_data:
