@@ -101,13 +101,13 @@ ORDER BY first_name;
 -- On compte le nombre de lignes, non les valeurs de celles-ci.
 
 -- Exo 2.3.3
--- Faux
+-- Vrai
 
 -- Exo 2.3.4
--- Faux
+-- Faux - la fonction en crée rien mais calcule la somme par aggrégation
 
 -- Exo 2.3.5
--- VRAI
+-- Vrai
 
 -- Exo 2.3.6
 SELECT COUNT(*) -- il manque les parenthèses 
@@ -115,8 +115,13 @@ FROM student;
 
 SELECT
     COUNT(student_id) as student_id_count,
-    COUNT(login) as login_count -- login doit aussi être traité par une fonction agrégée, ou apapraitre dans un group_by
+    COUNT(login) as login_count -- login doit aussi être traité par une fonction agrégée, car sinon on a un problème shape (pas même nombre d'items correspondant entre student_id et login), ou apparaitre dans un group_by
 FROM student;
+-- seconde solution avec group by : count student_id by login, so value 1 repeated 25 times
+SELECT
+    COUNT(student_id) as student_id_count
+FROM student
+GROUP BY login;
 
 SELECT MIN(year_result), MAX(birth_date) -- correct
 FROM student
@@ -124,7 +129,7 @@ WHERE
     year_result > 12;
 
 -- Exo 2.3.7
-SELECT AVG(year_result) FROM student;
+SELECT AVG(year_result) as "Moyenne des résultats" FROM student;
 
 -- Exo 2.3.8
 SELECT MAX(year_result) FROM student;
@@ -136,7 +141,7 @@ SELECT SUM(year_result) FROM student;
 SELECT MIN(year_result) FROM student;
 
 -- Exo 2.3.11
-SELECT COUNT(*) FROM student;
+SELECT COUNT(*) FROM student; -- ne compte pas les lignes parfaitements nulles ; compte si une colonne n'est pas à null
 
 -- Exo 2.3.12
 SELECT login, DATE_PART ('YEAR', birth_date)
@@ -155,14 +160,14 @@ SELECT UPPER(last_name) as "Nom de Famille", first_name
 FROM student
 WHERE
     year_result >= 16
-ORDER BY year_result;
+ORDER BY year_result DESC;
 
 -- Exo 2.3.15
 SELECT
     first_name,
     last_name,
     login,
-    left(lower(first_name), 2) || left(lower(last_name), 4) as "Nouveau login"
+    lower(left(first_name, 2)) || lower(left(last_name), 4) as "Nouveau login"
 FROM student
 WHERE
     year_result between 6 and 10;
@@ -176,7 +181,9 @@ WHERE year_result in (10, 12, 14);
 select last_name, login, year_result
 FROM student
 WHERE
-    left(last_name, 1) in ('D', 'M', 'S');
+    lower(left(last_name, 1)) in ('d', 'm', 's');
+order by birth_date ASC
+-- or SUBSTRING(last_name, 1,1)
 
 -- Exo 2.3.18
 select last_name, login, year_result
@@ -209,13 +216,15 @@ select
     last_name,
     year_result,
     case
-        when year_result = 10 then 'neutre'
         when year_result < 10 then 'inférieure'
+        when year_result = 10 then 'neutre'
         else 'supérieure'
     end as "Catégorie"
 FROM student
 WHERE
     DATE_PART ('year', birth_date) BETWEEN 1955 and 1965;
+
+-- or TO_CHAR or EXTRACT(year from birth_date)
 
 -- Exo 2.3.22
 -- TMmonth => TM (Template Mode) var rechercher la variable de langue initialisée sur le serveur
@@ -224,7 +233,7 @@ SET lc_time = 'fr-FR.UTF-8';
 select
     last_name,
     year_result,
-    TO_CHAR (birth_date, 'D TMmonth YYYY') as "Literal_date"
+    TO_CHAR (birth_date, 'D TMmonth YYYY') as "Literal_date" -- FMmonth supprime les espaces calculés pour la longueur de caractères des mois
 FROM student
 WHERE
     DATE_PART ('year', birth_date) BETWEEN 1975 and 1985;
