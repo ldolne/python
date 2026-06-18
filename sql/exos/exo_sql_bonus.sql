@@ -39,19 +39,206 @@ where (cat in ('B1','C1') and locality not in ('Lille', 'Namur')) OR
 select ncli, name 
 from client
 where locality = 'Namur' and ncli not in (select ncli from porder)
+order by ncli asc;
 
--- Exo 2.2.1
+-- Exo 2.2.2
 select npro
 from product
 where label like '%SAPIN%' and npro in (select npro from detail);
 order by npro
+
+-- inversé
+select distinct npro
+from detail
+where npro in (select npro from product where label like '%SAPIN%');
+
+-- Exo 2.2.3
+select ncli
+from client
+where account >= 0 OR ncli in
+(select distinct ncli 
+from porder)
+order by ncli; -- account < 0 pas nécessaire car déjà compris suite à OR et account >= 0
+
+-- Exo 2.2.4
+-- not (x and y)
+select ncli
+from client
+where ncli not in
+(select c.ncli 
+from client c
+where cat in ('B1','C1')) or ncli not in (select c.ncli 
+from client c
+where locality in ('Lille','Namur'))
+order by ncli;
+-- Not x OR not y
+select NCLI
+from client
+where NCLI not in (
+select ncli from client
+where (cat in ('B1', 'C1')) and (locality in ('Lille', 'Namur'))
+)
+order by ncli;
+
+-- Exo 2.2.5
+select p.npro, p.label
+from product p
+where label like '%SAPIN%' and 
+npro not in (select d.npro
+from detail d
+inner join porder po on d.norder = po.norder
+inner join client c on po.ncli = c.ncli
+where locality != 'Toulouse')
+and npro in (select d.npro
+from detail d
+inner join porder po on d.norder = po.norder
+inner join client c on po.ncli = c.ncli
+where locality = 'Toulouse');
+
+-- Avec full subqueries
+select p.npro, p.label
+from product p
+where label like '%SAPIN%' 
+	and npro not in (select npro
+					from detail 
+					where norder in (select norder
+									from porder
+									where ncli in (select ncli
+													from client
+													where locality = 'Toulouse')))
+and npro not in (select npro
+				from detail 
+				where norder in (select norder
+								from porder
+								where ncli in (select ncli
+											from client
+											where locality != 'Toulouse')))
+
+-- Avec except
+select p.npro, p.label
+from product p
+where label like '%SAPIN%' and 
+npro in 
+(select d.npro
+from detail d
+inner join porder po on d.norder = po.norder
+inner join client c on po.ncli = c.ncli
+where locality = 'Toulouse'
+except 
+select d.npro
+from detail d
+inner join porder po on d.norder = po.norder
+inner join client c on po.ncli = c.ncli
+where locality != 'Toulouse');
+
+-- Exo 2.2.6
+select count(norder) as "nbOrders"
+from porder
+where norder in (
+select po.norder
+from detail d
+inner join porder po on d.norder = po.norder
+inner join product p on d.npro = p.npro
+where p.label like '%ACIER%'
+);
+
+-- Exo 2.2.7
+select distinct locality
+from client
+where ncli in (select ncli
+				from porder
+				where date_part('year', ordermoment) = '2008' and 
+				date_part('month', ordermoment) = '12')
+order by locality ASC;
+
+-- Exo 2.2.8
+select npro, label
+from product
+where npro not in (select d.npro
+					from detail d
+					inner join porder po on d.norder = po.norder
+					where date_part('year', ordermoment) = '2008' and 
+					date_part('month', ordermoment) = '12');
+-- Full subqueries
+select npro, label
+from product
+where npro not in (select npro
+					from detail
+					where norder in (select norder
+										from porder
+										where date_part('year', ordermoment) = '2008' and 
+										date_part('month', ordermoment) = '12'));
+
+-- Exo 2.2.9
+select distinct locality
+from client
+where locality not in(
+select locality
+from client
+where ncli not in(select ncli
+from porder));
+
+-- Avec join et null
+select locality
+from client
+where locality not in (select distinct locality
+from porder p
+right join client c
+on p.ncli = c.ncli
+where p.norder is null
+group by locality);
+
+select locality
+from client
+where ncli not in(select ncli
+from porder);
+
+select c.ncli, c.locality
+from porder po
+inner join client c on po.ncli = c.ncli;
+
+select locality
+from client
+group by locality 
+having count(ncli) >= all(
+select count(*)
+from client
+where ncli in(
+-- Clients qui ont commandé
+select c.ncli
+from client c
+inner join porder po on c.ncli = po.ncli)
+group by locality);
+
+-- other
+select locality
+from client
+group by locality 
+having count(ncli) = all(
+select count(*)
+from client
+where ncli in(
+-- Clients qui ont commandé
+select c.ncli
+from client c
+inner join porder po on c.ncli = po.ncli)
+group by locality);
+
+-- ddd
+select locality, string_agg(c.ncli, ', '), count(norder)
+from client c
+inner join porder po on c.ncli = po.ncli
+group by locality, c.ncli;
+select count(ncli)
+from client
+group by locality ;
 
 -- Exo 2.2.10
 select norder
 from porder
 where norder not in (
 select norder from detail
-where npro in (
+where npro in ( -- not in pas possible ici, car récupérerait les commandes avec des lignes de détails sans sapin, mais la même commande pourrait avoir une ligne détail sapin non sélectionnée ici
 select npro
 from product
 where label like '%SAPIN%')
