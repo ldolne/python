@@ -67,17 +67,27 @@ group by section_id
 having count(student_id) > 4);
 
 -- Exo 2.7.8
+-- Subqueries
 select last_name, first_name, section_id
 from student
-where year_result in
-(select max(year_result)
-from student
-group by section_id)
-and section_id not in
-(select section_id
-from student
-group by section_id
-having avg(year_result) < 10);
+where year_result in (select max(year_result)
+						from student
+						group by section_id)
+and section_id not in (select section_id
+						from student
+						group by section_id
+						having avg(year_result) < 10);
+
+-- With correlations
+SELECT last_name, first_name, section_id
+FROM student s1
+WHERE year_result = (SELECT max(year_result)
+					FROM student s2
+					WHERE s2.section_id = s1.section_id) -- group by section_id pas nécessaire car résultats déjà filtrés sur la section
+and section_id not in (select section_id
+						from student
+						group by section_id
+						having avg(year_result) < 10);
 
 -- Exo 2.7.9
 -- With limit

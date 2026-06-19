@@ -303,3 +303,49 @@ inner join detail d on po.norder = d.norder
 inner join product p on p.npro = d.npro
 group by p.label, c.locality
 having sum(qorder) > 500;
+
+-- Exo 2.5 - Set Quantifiers
+-- Exo 2.5.1
+-- 1. Display the product’s number for products that have been ordered in every locality.
+-- Translation : il n'existe pas de localité qui n'aurait pas commandé de produit
+select npro
+from product p
+where not exists(select *
+				from client
+				where locality not in (select locality
+									from client c, porder o, detail d
+									where c.ncli = o.ncli and d.norder = o.norder
+									and d.npro = p.npro
+									));
+-- Exo 2.5.2
+-- 2. Display the client number of the clients who ordered all the products.
+-- Translation : le client pour lesquels il n'y a pas de produit qui n'a pas été commandé
+select ncli
+from client c
+where not exists(select *
+				from product
+				where npro not in (select npro
+									from porder o, detail d
+									where d.norder = o.norder
+									and c.ncli = d.npro
+									));
+
+-- Exo 2.5.3
+-- 3. Display all the information about clients that, if they did not order all the products (il existe un produit au moins non commandé), did order
+-- for a total greater or equal to 50 000€. - OPTIONAL
+-- => à nouveau implication
+select *
+from client c
+where not exists(select *
+				from product
+				where npro not in (select npro
+									from porder o, detail d
+									where d.norder = o.norder
+									and c.ncli = d.npro
+									))
+OR c.ncli in(select c2.ncli
+			from client c2, porder o2, detail d2, product p2
+			where c2.ncli = o2.ncli and d2.norder = o2.norder and d2.npro = p2.npro
+			group by c2.ncli
+			having sum(d2.qorder * p2.price) >= 50000
+		);
